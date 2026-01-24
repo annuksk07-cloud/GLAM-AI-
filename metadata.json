@@ -1,0 +1,8 @@
+{
+  "name": "GLAM AI",
+  "description": "Professional AI-powered personal makeup artist that analyzes your face and provides personalized, step-by-step makeup and skincare guidance.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
