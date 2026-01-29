@@ -176,8 +176,9 @@ const App: React.FC = () => {
       localStorage.setItem('glam_ai_last_analysis', JSON.stringify(result));
       if (capturedImage) localStorage.setItem('glam_ai_last_image', capturedImage);
       setView('ANALYSIS');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Analysis failed:", err);
+      alert("Analysis failed: " + (err.message || err.toString()));
       setView('DASHBOARD');
     }
   };
@@ -191,9 +192,9 @@ const App: React.FC = () => {
       steps[0].generatedImageUrl = firstStepImg || undefined;
       setTutorialSteps(steps);
       setView('TUTORIAL');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Tutorial generation failed:", err);
-      alert("Failed to generate tutorial.");
+      alert("Failed to generate tutorial: " + (err.message || err.toString()));
     } finally {
       setLoading(false);
     }
@@ -201,13 +202,17 @@ const App: React.FC = () => {
 
   const fetchStepImage = async (stepIndex: number) => {
     if (!originalBase64 || !tutorialSteps[stepIndex] || tutorialSteps[stepIndex].generatedImageUrl) return;
-    const previousStepsNames = tutorialSteps.slice(0, stepIndex).map(s => s.name).join(', ') || "No previous steps";
-    const img = await generateTutorialStepImage(originalBase64, tutorialSteps[stepIndex], previousStepsNames);
-    setTutorialSteps(prev => {
-      const updated = [...prev];
-      updated[stepIndex].generatedImageUrl = img || undefined;
-      return updated;
-    });
+    try {
+      const previousStepsNames = tutorialSteps.slice(0, stepIndex).map(s => s.name).join(', ') || "No previous steps";
+      const img = await generateTutorialStepImage(originalBase64, tutorialSteps[stepIndex], previousStepsNames);
+      setTutorialSteps(prev => {
+        const updated = [...prev];
+        updated[stepIndex].generatedImageUrl = img || undefined;
+        return updated;
+      });
+    } catch (err: any) {
+      console.error("Failed to fetch step image:", err);
+    }
   };
 
   const handleVisualizeHaircut = async (style: HaircutStyle) => {
@@ -225,9 +230,9 @@ const App: React.FC = () => {
       setGeneratedHaircutImage(img);
       setSelectedHaircut(style);
       setView('HAIRCUTS');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Haircut visualization failed:", err);
-      alert("Visualization failed.");
+      alert("Visualization failed: " + (err.message || err.toString()));
     } finally {
       setLoading(false);
     }
@@ -252,9 +257,9 @@ const App: React.FC = () => {
       setGeneratedDressImage(img);
       setSelectedDress(dress);
       setView('DRESS_PREVIEW');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Dress visualization failed:", err);
-      alert("Try-on failed.");
+      alert("Try-on failed: " + (err.message || err.toString()));
     } finally {
       setLoading(false);
     }
@@ -275,9 +280,9 @@ const App: React.FC = () => {
         updated[0].imageUrl = firstImg || undefined;
         return updated;
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Stylist generation failed:", err);
-      alert("Stylist failed.");
+      alert("Stylist failed: " + (err.message || err.toString()));
       setView('DASHBOARD');
     } finally {
       setLoading(false);
@@ -293,8 +298,9 @@ const App: React.FC = () => {
       const recommendations = await generatePersonalityRecommendations(bodyAnalysis, answers);
       setPersonalityData(recommendations);
       setView('PERSONALITY_STYLIST_RESULTS');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Personality styling failed:", err);
+      alert("Personality styling failed: " + (err.message || err.toString()));
       setView('DASHBOARD');
     } finally {
       setLoading(false);
@@ -308,8 +314,9 @@ const App: React.FC = () => {
       const finalImg = await generateFinalLookImage(originalBase64, selections, fullBodyAnalysis);
       setFinalPersonalityImage(finalImg);
       setView('PERSONALITY_STYLIST_FINAL');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Final render failed:", err);
+      alert("Final render failed: " + (err.message || err.toString()));
     } finally {
       setLoading(false);
     }
