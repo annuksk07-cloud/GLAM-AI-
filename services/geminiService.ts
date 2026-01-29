@@ -1,10 +1,11 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-// Removed top-level ai instantiation to ensure latest API key is used inside functions and to fix ImportMeta error.
+// Use process.env.API_KEY directly as per @google/genai coding guidelines.
+// Removed getApiKey helper that used import.meta.env to resolve Property 'env' does not exist on type 'ImportMeta' error.
 
 export const analyzeFace = async (base64Image: string) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
@@ -61,7 +62,7 @@ export const analyzeFace = async (base64Image: string) => {
 };
 
 export const analyzeFullBody = async (base64Image: string) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
@@ -91,7 +92,7 @@ export const analyzeFullBody = async (base64Image: string) => {
 };
 
 export const generatePersonalityRecommendations = async (analysis: any, answers: string[]) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
@@ -127,7 +128,7 @@ export const generatePersonalityRecommendations = async (analysis: any, answers:
 };
 
 export const generateFinalLookImage = async (originalBase64: string, selections: string[], analysis: any) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Photorealistically overlay the following look on the user's body: ${selections.join(', ')}. 
   Maintain 100% face/body feature consistency. User is ${analysis.bodyType} with ${analysis.skinTone} tone. 
@@ -151,7 +152,7 @@ export const generateFinalLookImage = async (originalBase64: string, selections:
 };
 
 export const generateMakeupTutorial = async (faceData: any, occasion: string, country: string) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
@@ -206,7 +207,7 @@ export const generateMakeupTutorial = async (faceData: any, occasion: string, co
 };
 
 export const generateTutorialStepImage = async (originalBase64: string, stepInfo: any, allPreviousStepsInfo: string) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `PHOTOREALISTIC AI ARTISTRY ENGINE: Apply Step ${stepInfo.step} (${stepInfo.name}) to the face. 
   Ensure identity consistency. Format as high-compression WebP. 
@@ -230,7 +231,7 @@ export const generateTutorialStepImage = async (originalBase64: string, stepInfo
 };
 
 export const generateHaircutVisualization = async (originalBase64: string, style: any) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Render ${style.name} haircut on the provided face. 
   Hair Params: ${style.params}. Maintain 99.5% identity. 
@@ -254,7 +255,7 @@ export const generateHaircutVisualization = async (originalBase64: string, style
 };
 
 export const generateDressTryOn = async (originalBase64: string, dress: any, skinTone: string) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Photorealistically overlay ${dress.name} on the user photo maintaining 100% facial feature consistency (eyes/nose/mouth position/size/angle) with zero distortions; render only dress changes using exact specifications: ${dress.styleParams}. Output 1080p JPG matching original photo's lighting and skin tone (${skinTone}).`;
 
@@ -276,7 +277,7 @@ export const generateDressTryOn = async (originalBase64: string, dress: any, ski
 };
 
 export const generateStylistLook = async (originalBase64: string, lookData: any, analysis: any) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Photorealistically overlay a new stylish look on the user. 
   Outfit: ${lookData.outfit}. 
@@ -303,7 +304,7 @@ export const generateStylistLook = async (originalBase64: string, lookData: any,
 };
 
 export const generateStylistDescriptions = async (analysis: any) => {
-  // Use process.env.API_KEY directly and instantiate inside function.
+  // Initializing GoogleGenAI with process.env.API_KEY directly
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
