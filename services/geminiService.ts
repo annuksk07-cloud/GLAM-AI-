@@ -1,21 +1,18 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 
 /**
  * Service functions for GLAM AI using the Gemini API.
- * 
- * IMPORTANT: Adheres strictly to system instructions:
- * 1. Exclusively uses process.env.API_KEY for the API key.
- * 2. Uses GoogleGenAI class (not GoogleGenerativeAI).
- * 3. Initializes with { apiKey: process.env.API_KEY } as a named parameter.
  */
+
+// API Key is handled by process.env.API_KEY as per global guidelines.
 
 export const analyzeFace = async (base64Image: string) => {
   // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    // Upgraded to gemini-3-pro-preview for complex facial biometric reasoning.
+    model: 'gemini-3-pro-preview',
     contents: {
       parts: [
         { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
@@ -69,9 +66,11 @@ export const analyzeFace = async (base64Image: string) => {
 };
 
 export const analyzeFullBody = async (base64Image: string) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    // Upgraded to gemini-3-pro-preview for complex full-body analysis and style preference detection.
+    model: 'gemini-3-pro-preview',
     contents: {
       parts: [
         { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
@@ -98,6 +97,7 @@ export const analyzeFullBody = async (base64Image: string) => {
 };
 
 export const generatePersonalityRecommendations = async (analysis: any, answers: string[]) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
@@ -133,6 +133,7 @@ export const generatePersonalityRecommendations = async (analysis: any, answers:
 };
 
 export const generateFinalLookImage = async (originalBase64: string, selections: string[], analysis: any) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Photorealistically overlay the following look on the user's body: ${selections.join(', ')}. 
   Maintain 100% face/body feature consistency. User is ${analysis.bodyType} with ${analysis.skinTone} tone. 
@@ -156,9 +157,11 @@ export const generateFinalLookImage = async (originalBase64: string, selections:
 };
 
 export const generateMakeupTutorial = async (faceData: any, occasion: string, country: string) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    // Upgraded to gemini-3-pro-preview for advanced reasoning on artistry steps and micro-data generation.
+    model: 'gemini-3-pro-preview',
     contents: `Generate a 12-step AI Intelligence Enhanced tutorial. 
     User Profile: ${faceData.faceShape} face, ${faceData.skinTone} skin, ${faceData.eyeShape} eyes. 
     Occasion: ${occasion}, Style: ${country}.
@@ -210,6 +213,7 @@ export const generateMakeupTutorial = async (faceData: any, occasion: string, co
 };
 
 export const generateTutorialStepImage = async (originalBase64: string, stepInfo: any, allPreviousStepsInfo: string) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `PHOTOREALISTIC AI ARTISTRY ENGINE: Apply Step ${stepInfo.step} (${stepInfo.name}) to the face. 
   Ensure identity consistency. Format as high-compression WebP. 
@@ -233,6 +237,7 @@ export const generateTutorialStepImage = async (originalBase64: string, stepInfo
 };
 
 export const generateHaircutVisualization = async (originalBase64: string, style: any) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Render ${style.name} haircut on the provided face. 
   Hair Params: ${style.params}. Maintain 99.5% identity. 
@@ -256,6 +261,7 @@ export const generateHaircutVisualization = async (originalBase64: string, style
 };
 
 export const generateDressTryOn = async (originalBase64: string, dress: any, skinTone: string) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Photorealistically overlay ${dress.name} on the user photo maintaining 100% facial feature consistency (eyes/nose/mouth position/size/angle) with zero distortions; render only dress changes using exact specifications: ${dress.styleParams}. Output 1080p JPG matching original photo's lighting and skin tone (${skinTone}).`;
 
@@ -277,6 +283,7 @@ export const generateDressTryOn = async (originalBase64: string, dress: any, ski
 };
 
 export const generateStylistLook = async (originalBase64: string, lookData: any, analysis: any) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Photorealistically overlay a new stylish look on the user. 
   Outfit: ${lookData.outfit}. 
@@ -303,9 +310,11 @@ export const generateStylistLook = async (originalBase64: string, lookData: any,
 };
 
 export const generateStylistDescriptions = async (analysis: any) => {
+  // Always initialize right before use to ensure the latest key state.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    // Upgraded to gemini-3-pro-preview for professional-grade personalized style look descriptions.
+    model: 'gemini-3-pro-preview',
     contents: `Based on this style profile: ${JSON.stringify(analysis)}, generate 3 personalized stylish looks:
     Look 1: Casual Chic (daily wear)
     Look 2: Formal Elegance (events)
