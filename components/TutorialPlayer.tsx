@@ -20,7 +20,7 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
   const step = steps[currentStep];
 
   useEffect(() => {
-    if (!step.generatedImageUrl) {
+    if (!step?.generatedImageUrl) {
       const load = async () => {
         setIsGenerating(true);
         await onLoadStepImage(currentStep);
@@ -28,26 +28,29 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
       };
       load();
     }
-  }, [currentStep, step.generatedImageUrl, onLoadStepImage]);
+  }, [currentStep, step?.generatedImageUrl, onLoadStepImage]);
 
   if (!step) return null;
 
-  // Feature 4: Personalized Pro Tip Logic
+  // Personalized Pro Tip Logic with safety checks
   const getFaceSpecificTip = () => {
     if (!analysis) return null;
-    const shape = analysis.faceShape.toLowerCase();
+    const shape = (analysis.faceShape || '').toLowerCase();
+    const eyeShape = (analysis.eyeShape || '').toLowerCase();
+    const stepName = (step.name || '').toLowerCase();
     
-    if (step.name.toLowerCase().includes('contour')) {
+    if (stepName.includes('contour')) {
       if (shape.includes('round')) return "Apply contour slightly higher on your cheekbones to create the illusion of length.";
       if (shape.includes('square')) return "Focus contour on the outer corners of your jawline to soften your structure.";
       if (shape.includes('heart')) return "Keep contour light on the chin and focus on the sides of your forehead.";
     }
     
-    if (step.name.toLowerCase().includes('liner') || step.name.toLowerCase().includes('eye')) {
-      if (analysis.eyeShape.toLowerCase().includes('hooded')) return "Apply eyeshadow slightly above your natural crease for visibility.";
-      if (analysis.eyeShape.toLowerCase().includes('almond')) return "Emphasize the outer corners for a classic cat-eye effect.";
+    if (stepName.includes('liner') || stepName.includes('eye')) {
+      if (eyeShape.includes('hooded')) return "Apply eyeshadow slightly above your natural crease for visibility.";
+      if (eyeShape.includes('almond')) return "Emphasize the outer corners for a classic cat-eye effect.";
     }
 
+    if (!shape) return null;
     return `Based on your ${shape} face, ensure seamless blending toward the hairline.`;
   };
 
@@ -104,7 +107,7 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
               <div className="absolute inset-0 z-30 bg-black/90 backdrop-blur-3xl flex flex-col items-center justify-center text-center p-12 animate-fadeIn">
                  <div className="w-20 h-20 border-[6px] border-pink-500 border-t-transparent rounded-full animate-spin mb-10 shadow-[0_0_30px_rgba(255,20,147,0.3)]"></div>
                  <h3 className="text-3xl font-black mb-4 tracking-tighter uppercase tracking-[4px]">Neural Render <span className="text-pink-500">Active</span></h3>
-                 <p className="text-white/30 max-w-sm text-sm font-bold uppercase tracking-widest">Applying Layer ${step.step} to Biometric ID: 4921-X</p>
+                 <p className="text-white/30 max-w-sm text-sm font-bold uppercase tracking-widest">Applying Layer {step.step} to Biometric ID: 4921-X</p>
               </div>
             )}
 
@@ -165,7 +168,7 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
             </div>
           </div>
 
-          {/* AI MICRO-DATA PANEL (Layer 1: Standard) */}
+          {/* AI MICRO-DATA PANEL */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="bg-white/5 p-12 rounded-[56px] border border-white/10 shadow-2xl relative overflow-hidden group">
                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -175,7 +178,7 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
                  <i className="fa fa-feather-pointed mr-4"></i> Artistry Protocol
                </h3>
                <div className="text-white/80 leading-relaxed text-base font-medium space-y-8">
-                 {step.instruction.split('. ').map((line, idx) => line.trim() && (
+                 {(step.instruction || '').split('. ').map((line, idx) => line.trim() && (
                    <div key={idx} className="flex items-start">
                      <div className="w-10 h-10 bg-pink-500/10 text-pink-400 rounded-2xl flex items-center justify-center text-[12px] font-black shrink-0 mr-6 mt-0.5 border border-pink-500/20">{idx + 1}</div>
                      <div className="space-y-1">
@@ -192,7 +195,6 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
             </div>
             
             <div className="space-y-10">
-              {/* Feature 4: Personalized Pro Tips Injection */}
               {faceTip && (
                 <div className="p-10 bg-[#FFD700]/5 rounded-[48px] border border-[#FFD700]/30 shadow-2xl animate-fadeIn relative group">
                    <div className="absolute -inset-2 bg-[#FFD700]/5 rounded-[52px] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -235,7 +237,7 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
           </div>
         </div>
 
-        {/* SIDEBAR: PRODUCT CARDS (4 Columns) */}
+        {/* SIDEBAR */}
         <div className="lg:col-span-4 space-y-10 sticky top-28">
           <div className="bg-white/5 p-12 rounded-[64px] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.5)] backdrop-blur-3xl overflow-hidden relative group">
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-pink-500/10 blur-[100px] rounded-full group-hover:bg-pink-500/20 transition-all"></div>
@@ -313,7 +315,6 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
             </div>
           </div>
 
-          {/* PROGRESS CARD */}
           <div className="bg-gradient-to-br from-white/10 to-transparent p-12 rounded-[56px] border border-white/10 shadow-[0_40px_80px_rgba(0,0,0,0.4)]">
              <div className="flex justify-between items-center mb-10">
                <div className="flex items-center space-x-3">
@@ -327,10 +328,6 @@ const TutorialPlayer: React.FC<TutorialPlayerProps> = ({ steps, onComplete, onLo
                 <div className="h-full bg-pink-500 transition-all duration-1500 ease-out shadow-[0_0_30px_rgba(255,20,147,0.8)] relative" style={{ width: `${(step.step/steps.length)*100}%` }}>
                    <div className="absolute top-0 right-0 h-full w-8 bg-white/20 blur-md"></div>
                 </div>
-             </div>
-             <div className="flex justify-between items-center opacity-40 text-[10px] font-black uppercase tracking-[2px]">
-                <span className="flex items-center"><i className="fa fa-layer-group mr-2"></i> {step.step <= 4 ? 'BASE PREP' : step.step <= 8 ? 'COLOR CORE' : 'FINAL SEAL'}</span>
-                <span className="text-pink-400 flex items-center"><i className="fa fa-hourglass-half mr-2"></i> ~14m REMAINING</span>
              </div>
           </div>
         </div>

@@ -28,13 +28,13 @@ const HaircutGallery: React.FC<HaircutGalleryProps> = ({ onVisualize, generatedI
 
   // Feature 2: Face Shape Optimized Filter
   const filteredStyles = useMemo(() => {
-    if (!analysis) return HAIRCUT_STYLES;
-    const shape = analysis.faceShape.toLowerCase();
+    if (!analysis || !analysis.faceShape) return HAIRCUT_STYLES;
+    const shape = (analysis.faceShape || '').toLowerCase();
     
     // Logic to prioritize haircuts based on face shape
     return [...HAIRCUT_STYLES].sort((a, b) => {
-      const aLower = a.params.toLowerCase();
-      const bLower = b.params.toLowerCase();
+      const aLower = (a.params || '').toLowerCase();
+      const bLower = (b.params || '').toLowerCase();
       
       const isAMatch = (shape.includes('round') && (aLower.includes('volume') || a.category === 'Long')) ||
                        (shape.includes('oval') && true) ||
@@ -171,7 +171,7 @@ const HaircutGallery: React.FC<HaircutGalleryProps> = ({ onVisualize, generatedI
       <div className="text-center space-y-4 pt-4">
         <h2 className="text-5xl md:text-6xl font-black title-font uppercase tracking-tighter">AI Haircut <span className="text-pink-500">Visualizer</span></h2>
         <p className="opacity-60 font-medium max-w-xl mx-auto text-sm italic">Select a style to render onto your face instantly. 99.5% face-matching accuracy guaranteed.</p>
-        {analysis && (
+        {analysis && analysis.faceShape && (
           <div className="inline-flex items-center space-x-3 bg-pink-500/10 px-4 py-2 rounded-full border border-pink-500/20 animate-pulse">
             <i className="fa fa-circle-check text-pink-500 text-xs"></i>
             <span className="text-[10px] font-black uppercase tracking-widest">Optimized for your {analysis.faceShape} face shape</span>
@@ -188,8 +188,8 @@ const HaircutGallery: React.FC<HaircutGalleryProps> = ({ onVisualize, generatedI
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-4">
               {filteredStyles.filter(s => s.category === cat.key).map(style => {
-                const isMatch = analysis && (
-                   (analysis.faceShape.toLowerCase().includes('round') && (style.params.toLowerCase().includes('volume') || style.category === 'Long')) ||
+                const isMatch = analysis && analysis.faceShape && (
+                   (analysis.faceShape.toLowerCase().includes('round') && ((style.params || '').toLowerCase().includes('volume') || style.category === 'Long')) ||
                    (analysis.faceShape.toLowerCase().includes('oval'))
                 );
 

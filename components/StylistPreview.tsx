@@ -11,19 +11,21 @@ const StylistPreview: React.FC<StylistPreviewProps> = ({ looks, onClose }) => {
   const [activeLook, setActiveLook] = useState(0);
 
   const handleDownload = (look: StylistLook) => {
-    if (!look.imageUrl) return;
+    if (!look?.imageUrl) return;
     const link = document.createElement('a');
     link.href = look.imageUrl;
-    link.download = `glam_ai_stylist_${look.title.toLowerCase().replace(/\s+/g, '_')}.png`;
+    const safeTitle = (look.title || 'style').toLowerCase().replace(/\s+/g, '_');
+    link.download = `glam_ai_stylist_${safeTitle}.png`;
     link.click();
   };
 
   const handleShare = async (look: StylistLook) => {
+    if (!look) return;
     try {
       if (navigator.share) {
         const shareData: ShareData = {
-          title: `My GLAM AI ${look.title} Look`,
-          text: `Just got my ${look.title} styling from GLAM AI! #GLAMAI #AIStylist`,
+          title: `My GLAM AI ${look.title || 'Personal'} Look`,
+          text: `Just got my ${look.title || 'custom'} styling from GLAM AI! #GLAMAI #AIStylist`,
         };
 
         const currentUrl = window.location.href;
@@ -65,7 +67,7 @@ const StylistPreview: React.FC<StylistPreviewProps> = ({ looks, onClose }) => {
               className={`w-full text-left p-6 rounded-3xl border transition-all ${activeLook === i ? 'bg-pink-500 border-pink-400 shadow-xl shadow-pink-500/20' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
             >
               <span className={`block text-[10px] font-black uppercase tracking-widest mb-1 ${activeLook === i ? 'text-white/60' : 'text-pink-500'}`}>Look {i + 1}</span>
-              <span className="block text-lg font-black">{l.title}</span>
+              <span className="block text-lg font-black">{l.title || 'Untitled Style'}</span>
             </button>
           ))}
           
@@ -78,7 +80,7 @@ const StylistPreview: React.FC<StylistPreviewProps> = ({ looks, onClose }) => {
         {/* Visual Preview */}
         <div className="lg:col-span-5">
           <div className="aspect-[9/16] bg-black rounded-[56px] overflow-hidden border border-white/10 shadow-2xl relative group">
-            {look.imageUrl ? (
+            {look?.imageUrl ? (
               <img src={look.imageUrl} alt={look.title} className="w-full h-full object-cover animate-scaleUp" />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center space-y-4">
@@ -96,19 +98,19 @@ const StylistPreview: React.FC<StylistPreviewProps> = ({ looks, onClose }) => {
             <div className="space-y-6">
               <div>
                 <h4 className="text-[10px] font-black text-pink-500 uppercase tracking-widest mb-2">Outfit Selection</h4>
-                <p className="text-sm font-bold text-white/90 leading-relaxed">{look.outfit}</p>
+                <p className="text-sm font-bold text-white/90 leading-relaxed">{look?.outfit || 'Generating selection...'}</p>
               </div>
               <div>
                 <h4 className="text-[10px] font-black text-pink-500 uppercase tracking-widest mb-2">Makeup Palette</h4>
-                <p className="text-sm font-bold text-white/90 leading-relaxed">{look.makeup}</p>
+                <p className="text-sm font-bold text-white/90 leading-relaxed">{look?.makeup || 'Generating palette...'}</p>
               </div>
               <div>
                 <h4 className="text-[10px] font-black text-pink-500 uppercase tracking-widest mb-2">Hair Styling</h4>
-                <p className="text-sm font-bold text-white/90 leading-relaxed">{look.hair}</p>
+                <p className="text-sm font-bold text-white/90 leading-relaxed">{look?.hair || 'Generating style...'}</p>
               </div>
               <div className="pt-6 border-t border-white/5">
                 <h4 className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">Style Notes</h4>
-                <p className="text-xs font-medium text-white/60 leading-relaxed">{look.notes}</p>
+                <p className="text-xs font-medium text-white/60 leading-relaxed">{look?.notes || 'No notes available.'}</p>
               </div>
             </div>
 

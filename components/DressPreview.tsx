@@ -14,7 +14,8 @@ const DressPreview: React.FC<DressPreviewProps> = ({ image, dress, onClose }) =>
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = image;
-    link.download = `glam_ai_${dress.name.toLowerCase().replace(/\s+/g, '_')}.png`;
+    const safeName = (dress.name || 'look').toLowerCase().replace(/\s+/g, '_');
+    link.download = `glam_ai_${safeName}.png`;
     link.click();
   };
 
@@ -29,7 +30,7 @@ const DressPreview: React.FC<DressPreviewProps> = ({ image, dress, onClose }) =>
       if (navigator.share) {
         const shareData: ShareData = {
           title: 'My GLAM AI Wedding Look',
-          text: `Just tried on the ${dress.name} with GLAM AI! #GLAMAI #WeddingStyle`,
+          text: `Just tried on the ${dress.name || 'this look'} with GLAM AI! #GLAMAI #WeddingStyle`,
         };
 
         const currentUrl = window.location.href;
@@ -55,7 +56,7 @@ const DressPreview: React.FC<DressPreviewProps> = ({ image, dress, onClose }) =>
         <div className="p-8 border-b border-white/10 flex justify-between items-center">
           <div>
             <span className="text-[10px] font-black uppercase tracking-[4px] text-pink-500">Neural Try-On Result</span>
-            <h2 className="title-font text-3xl font-black text-white tracking-tight">{dress.name}</h2>
+            <h2 className="title-font text-3xl font-black text-white tracking-tight">{dress.name || 'Custom Look'}</h2>
           </div>
           <button onClick={onClose} className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 hover:bg-pink-500/20 transition-all">
             <i className="fa fa-times text-xl"></i>
@@ -95,7 +96,7 @@ const DressPreview: React.FC<DressPreviewProps> = ({ image, dress, onClose }) =>
           </div>
           
           <div className="flex justify-between items-center opacity-40 text-[10px] font-black uppercase tracking-[2px] pt-4 border-t border-white/5">
-             <span className="flex items-center"><i className="fa fa-globe mr-2"></i> Culture: {dress.culture}</span>
+             <span className="flex items-center"><i className="fa fa-globe mr-2"></i> Culture: {dress.culture || 'Universal'}</span>
              <span className="flex items-center"><i className="fa fa-shield-check mr-2"></i> Verified Result</span>
           </div>
         </div>
